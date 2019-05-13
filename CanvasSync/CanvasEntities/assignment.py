@@ -82,7 +82,8 @@ class Assignment(Entity):
                 out_file.write(u"<h1><strong>%s</strong></h1>" % self.name)
                 out_file.write(u"<big><a href=\"%s\">Click here to open the live page in Canvas</a></big>" % url)
                 out_file.write(u"<hr>")
-                out_file.write(self.assignment_info[u"description"])
+                if self.assignment_info[u"description"] is not None:
+                    out_file.write(self.assignment_info[u"description"])
 
     def add_files(self):
         """ Add all files that can be found in the description of the assignment to the list of children and sync """
@@ -115,7 +116,7 @@ class Assignment(Entity):
             # and then between 1 and 10 of any characters after that). This has 2 purposes:
             # 1) We do not try to re-download Canvas server files, since they are not matched by this regex
             # 2) We should stay clear of all links to web-sites (they could be large to download, we skip them here)
-            urls = re.findall(r'href=\"([^ ]*[.]{1}.{1,10})\"', self.assignment_info[u"description"])
+            urls = re.findall(r'href=\"([^ ]*[.]{1}.{1,10})\"', self.assignment_info[u"description"]) if self.assignment_info[u"description"] is not None else []
 
             for url in urls:
                 linked_file = LinkedFile(url, parent=self)
