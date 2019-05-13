@@ -41,7 +41,7 @@ def reorganize(items):
     # If no items or the resource that was attempted to be accessed does not exists (for instance if a teacher makes
     # a sub-header with no items in it, accessing the file content of the sub-header will make the server respond with
     # and error report). In both cases return empty lists.
-    if (isinstance(items, dict) and items.keys()[0] == u"errors") or len(items) == 0:
+    if (isinstance(items, dict) and list(items.keys())[0] == u"errors") or len(items) == 0:
         return [], []
 
     # Create a list that will store all files located in the outer most scope of the hierarchy
