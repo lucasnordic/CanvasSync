@@ -100,12 +100,13 @@ class Assignment(Entity):
         for url in canvas_file_urls:
             file_info = self.api.download_item_information(url)
 
+            item = None
             if u'display_name' in file_info:
                 item = File(file_info, parent=self)
             elif u'page_id' in file_info:
                 item = Page(file_info, parent=self)
 
-            if item:
+            if item is not None:
                 self.add_child(item)
 
         if self.settings.download_linked:

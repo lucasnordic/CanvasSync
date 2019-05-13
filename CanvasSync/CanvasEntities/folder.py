@@ -87,6 +87,9 @@ class Folder(Entity):
 
         for file in files:
             # Skip duplicates if this settings is active (otherwise the list will be empty)
+            if type(file) == str:
+                continue
+
             if file[u"id"] in self.black_list:
                 continue
 
@@ -98,6 +101,9 @@ class Folder(Entity):
         folders = self.api.get_folders_in_folder(self.id)
 
         for folder in folders:
+            if type(folder) == str:
+                continue
+
             if folder[u"name"] == u"course_image":
                 # Do we really need that course image?
                 continue
