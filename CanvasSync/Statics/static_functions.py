@@ -58,6 +58,7 @@ def reorganize(items):
         outer_indent = min([items[index][u"indent"] for index in range(len(items))])
     except KeyError:
         print(items)
+        outer_indent = 0
 
     # Reorganize all items in 'items'
     for item in items:
