@@ -52,7 +52,11 @@ class InstructureApi(object):
 
         api_call : string | Any call to the Instructure API ("/api/v1/courses" for instance)
         """
-        return json.loads(self._get(api_call).text)
+        try:
+            return json.loads(self._get(api_call).text)
+        except Exception as e:
+            print(e)
+            return {}
 
     def get_courses(self):
         """
