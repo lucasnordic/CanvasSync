@@ -42,7 +42,7 @@ class Folder(CanvasEntity):
 
         folder_id = self.folder_info[u"id"]
         folder_name = helpers.get_corrected_name(self.folder_info[u"name"])
-        folder_path = parent.get_path() + folder_name
+        folder_path = parent.get_path()# + folder_name
 
         # Initialize base Module class
         CanvasEntity.__init__(self,

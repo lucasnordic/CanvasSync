@@ -88,6 +88,9 @@ class Synchronizer(CanvasEntity):
         # Download list of dictionaries representing Canvas crouses and
         # add them all to the list of children
         for course_information in self.download_courses():
+            
+            if 'name' not in course_information or 'course_code' not in course_information:
+                continue
 
             # Add an empty list to the entities dictionary that will
             # store entities when added
