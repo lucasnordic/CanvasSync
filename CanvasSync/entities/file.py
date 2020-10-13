@@ -22,6 +22,8 @@ from __future__ import print_function
 # Inbuilt modules
 import os
 import sys
+import datetime
+import time
 
 # Third party
 from six import text_type
@@ -66,20 +68,13 @@ class File(CanvasEntity):
 
     def download(self):
         """ Download the file """
+        canvas_updated_at = datetime.datetime.strptime(self.file_info['updated_at'], "%Y-%m-%dT%H:%M:%SZ")
 
-        # I rename to sync_path so it wouldn't have the folder name duplicated in the file name
-        a = self.parent.get_path()
-        p = a[:a.rfind('/')]+"/"
-        self.sync_path = p + self.name
-
-        # name the hidden file keeps track of the version
-        hidden_path = p + '.' + self.name
-
-        # if the file is the latest version then no need to download
-        if os.path.exists(self.sync_path) and os.path.exists(hidden_path):
-            with open(hidden_path, u'r') as file:
-                if file.read() == self.file_info[u"updated_at"]:
-                    return False
+        # if our local file exists and is newer than that on canvas, no need to download
+        if os.path.exists(self.sync_path):
+            local_updated_at = datetime.datetime.strptime(time.ctime(os.path.getmtime(self.sync_path)), "%a %b %d %H:%M:%S %Y")
+            if local_updated_at >= canvas_updated_at:
+                return False
 
         self.print_status(u"DOWNLOADING", color=u"blue")
 
@@ -90,9 +85,10 @@ class File(CanvasEntity):
         try:
             with open(self.sync_path, u"wb") as out_file:
                 out_file.write(file_data)
-            # create the hidden file and write into it the updated_at date
-            with open(hidden_path, u"w") as out_file:
-                out_file.write(self.file_info[u"updated_at"])
+
+            # after downloading file, change the modified date to match that on canvas
+            modTime = time.mktime(canvas_updated_at.timetuple())
+            os.utime(self.sync_path, (modTime, modTime))
 
         except KeyboardInterrupt as e:
             # If interrupted mid-writing, delete the corrupted file

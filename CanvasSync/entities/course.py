@@ -52,7 +52,7 @@ class Course(CanvasEntity):
         if settings.use_nicknames:
             course_name = self.course_info[u"name"]
 
-        course_path = parent.get_path() + course_name
+        course_path = parent.get_path() # + course_name
 
         self.to_be_synced = True if course_name in parent.settings.courses_to_sync else False
 
@@ -113,7 +113,12 @@ class Course(CanvasEntity):
                 break
 
         # Change name of folder
-        main_folder[u"name"] = u"Other Files"
+        # main_folder[u"name"] = u"Other Files"
+
+        # We can just have the course files be place in the course folder
+        # instead of putting it in a subfolder called Other Files
+
+        main_folder[u"name"] = self.course_info["name"]
 
         folder = Folder(main_folder, self)
         self.add_child(folder)

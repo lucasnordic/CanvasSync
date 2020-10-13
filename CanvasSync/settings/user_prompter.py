@@ -164,13 +164,12 @@ def ask_for_token(domain):
 def ask_for_courses(settings, api):
 
     courses = api.get_courses()
-    # print(courses)
-    # os._exit(os.EX_OK)
-
 
     if settings.use_nicknames: 
+        # make sure the course name exists before putting course into course list
         courses = [name[u"name"] for name in courses if 'name' in name]
     else:
+        # make sure course code exists before putting course into course list
         courses = [name[u"course_code"].split(";")[-1] for name in courses if 'course_code' in name]
 
     choices = [True]*len(courses)
