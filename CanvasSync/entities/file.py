@@ -22,6 +22,8 @@ from __future__ import print_function
 # Inbuilt modules
 import os
 import sys
+import datetime
+import time
 
 # Third party
 from six import text_type
@@ -66,10 +68,18 @@ class File(CanvasEntity):
 
     def download(self):
         """ Download the file """
+        canvas_updated_at = datetime.datetime.strptime(self.file_info['updated_at'], "%Y-%m-%dT%H:%M:%SZ")
+
+        # if our local file exists and is newer than that on canvas, no need to download
         if os.path.exists(self.sync_path):
+<<<<<<< HEAD
             remote_file_modified_at = helpers.convert_utc_to_timestamp(self.file_info.get(CONSTANTS.HISTORY_MODIFIED_AT))
             local_file_modified_at = os.stat(self.sync_path).st_mtime
             if remote_file_modified_at == local_file_modified_at:
+=======
+            local_updated_at = datetime.datetime.strptime(time.ctime(os.path.getmtime(self.sync_path)), "%a %b %d %H:%M:%S %Y")
+            if local_updated_at >= canvas_updated_at:
+>>>>>>> 763eeb91d092aaaf225ea46abcfc5dd0a4a0f8c0
                 return False
 
         self.print_status(u"DOWNLOADING", color=u"blue")
@@ -81,6 +91,10 @@ class File(CanvasEntity):
         try:
             with open(self.sync_path, u"wb") as out_file:
                 out_file.write(file_data)
+
+            # after downloading file, change the modified date to match that on canvas
+            modTime = time.mktime(canvas_updated_at.timetuple())
+            os.utime(self.sync_path, (modTime, modTime))
 
         except KeyboardInterrupt as e:
             # If interrupted mid-writing, delete the corrupted file

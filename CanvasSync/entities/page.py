@@ -146,6 +146,7 @@ class Page(CanvasEntity):
         self.download_linked_files(body)
         self._make_folder()
 
+<<<<<<< HEAD
         base, tail = os.path.split(self.sync_path)
         html_path = os.path.join(self.sync_path, tail) + u".html"
         with io.open(html_path, u"w", encoding=u"utf-8") as out_file:
@@ -153,6 +154,14 @@ class Page(CanvasEntity):
             out_file.write(u"<big><a href=\"%s\">Click here to open the live page in Canvas</a></big>" % html_url)
             out_file.write(u"<hr>")
             out_file.write(body or u"")
+=======
+        if not os.path.exists(self.sync_path):
+            with io.open(self.sync_path + u".html", u"w", encoding=u"utf-8") as out_file:
+                out_file.write(u"<h1><strong>%s</strong></h1>" % self.name)
+                out_file.write(u"<big><a href=\"%s\">Click here to open the live page in Canvas</a></big>" % html_url)
+                out_file.write(u"<hr>")
+                out_file.write(body)
+>>>>>>> 763eeb91d092aaaf225ea46abcfc5dd0a4a0f8c0
 
         return True
 
