@@ -120,6 +120,9 @@ class Course(CanvasEntity):
                 main_folder = folder
                 break
 
+        if main_folder is None:
+            return
+
         # Change name of folder
         # main_folder[u"name"] = u"Other Files"
 

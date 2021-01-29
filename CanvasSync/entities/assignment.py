@@ -80,8 +80,13 @@ class Assignment(CanvasEntity):
                 out_file.write(u"<big><a href=\"%s\">Click here to "
                                u"open the live page in Canvas</a></big>" % url)
                 out_file.write(u"<hr>")
+<<<<<<< HEAD:CanvasSync/entities/assignment.py
                 out_file.write(self.assignment_info.get(u"description")
                                or u"No description")
+=======
+                if self.assignment_info[u"description"] is not None:
+                    out_file.write(self.assignment_info[u"description"])
+>>>>>>> 9d6a4dfd3f63797e7cb3aa8dba262f78f5b9f6e0:CanvasSync/CanvasEntities/assignment.py
 
     def add_files(self):
         """
@@ -100,18 +105,25 @@ class Assignment(CanvasEntity):
         for url in canvas_file_urls:
             file_info = self.api.download_item_information(url)
 
+            item = None
             if u'display_name' in file_info:
                 item = File(file_info, parent=self)
             elif u'page_id' in file_info:
                 item = Page(file_info, parent=self)
+<<<<<<< HEAD:CanvasSync/entities/assignment.py
             else:
                 # Unknown entity, skip it
                 item = None
             if item:
+=======
+
+            if item is not None:
+>>>>>>> 9d6a4dfd3f63797e7cb3aa8dba262f78f5b9f6e0:CanvasSync/CanvasEntities/assignment.py
                 self.add_child(item)
 
         if self.settings.download_linked:
             # We also look for links to files downloaded from other servers
+<<<<<<< HEAD:CanvasSync/entities/assignment.py
             # Get all URLs ending in a file name (determined as a ending with
             # a '.' and then between 1 and 10 of any characters after that).
             # This has 2 purposes:
@@ -121,6 +133,13 @@ class Assignment(CanvasEntity):
             #    (they could be large to download, we skip them here)
             urls = re.findall(r'href=\"([^ ]*[.]{1}.{1,10})\"',
                               self.assignment_info.get(u"description") or u"")
+=======
+            # Get all URLs ending in a file name (determined as a ending with a '.'
+            # and then between 1 and 10 of any characters after that). This has 2 purposes:
+            # 1) We do not try to re-download Canvas server files, since they are not matched by this regex
+            # 2) We should stay clear of all links to web-sites (they could be large to download, we skip them here)
+            urls = re.findall(r'href=\"([^ ]*[.]{1}.{1,10})\"', self.assignment_info[u"description"]) if self.assignment_info[u"description"] is not None else []
+>>>>>>> 9d6a4dfd3f63797e7cb3aa8dba262f78f5b9f6e0:CanvasSync/CanvasEntities/assignment.py
 
             for url in urls:
                 linked_file = LinkedFile(url, parent=self)

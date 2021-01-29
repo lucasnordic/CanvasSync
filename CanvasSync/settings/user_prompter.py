@@ -103,6 +103,7 @@ def ask_for_sync_path():
         readline.set_completer(path_completer)
 
     found = False
+    sync_path = None
     # Keep asking until a valid path has been entered by the user
     while not found:
         sync_path = input(u"\nEnter a relative or absolute path to sync to (~/Desktop/Canvas etc.):\n$ ")
@@ -135,7 +136,7 @@ def ask_for_domain():
     URL points to a correct URL that is not a Canvas server.
     """
     found = False
-
+    domain = None
     # Keep asking until a valid domain has been entered by the user
     while not found:
         domain = u"https://" + input(u"\nEnter the Canvas domain of your institution:\n$ https://")
@@ -153,7 +154,7 @@ def ask_for_token(domain):
     on the server. If the server responds with the resource the token is valid.
     """
     found = False
-
+    token = None
     # Keep asking until a valid authentication token has been entered by the user
     while not found:
         token = input(u"\nEnter authentication token (see 'Setup' section on https://github.com/perslev/CanvasSync for details):\n$ ")

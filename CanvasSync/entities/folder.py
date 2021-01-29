@@ -80,9 +80,14 @@ class Folder(CanvasEntity):
         files = self.api.get_files_in_folder(self.id)
 
         for file in files:
+<<<<<<< HEAD:CanvasSync/entities/folder.py
             # Skip duplicates if this settings is active
             # (otherwise the list will be empty)
             if file[u"id"] in self.black_list:
+=======
+            # Skip duplicates if this settings is active (otherwise the list will be empty)
+            if type(file) == str or file[u"id"] in self.black_list:
+>>>>>>> 9d6a4dfd3f63797e7cb3aa8dba262f78f5b9f6e0:CanvasSync/CanvasEntities/folder.py
                 continue
 
             file = File(file, self, add_to_list_of_entities=False)
@@ -93,6 +98,9 @@ class Folder(CanvasEntity):
         folders = self.api.get_folders_in_folder(self.id)
 
         for folder in folders:
+            if type(folder) == str:
+                continue
+
             if folder[u"name"] == u"course_image":
                 # Do we really need that course image?
                 continue
