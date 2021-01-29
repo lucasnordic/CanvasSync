@@ -19,20 +19,24 @@ See developer_info.txt file for more information on the class hierarchy of Canva
 # Future imports
 from __future__ import print_function
 
+# Inbuilt modules
+import os
+
 # Third party
 from six import text_type
 
 # CanvasSync modules
+from CanvasSync import constants as CONSTANTS
 from CanvasSync.entities.canvas_entity import CanvasEntity
+from CanvasSync.entities.external_url import ExternalUrl
 from CanvasSync.entities.file import File
 from CanvasSync.entities.page import Page
-from CanvasSync.entities.external_url import ExternalUrl
-from CanvasSync.utilities.ANSI import ANSI
 from CanvasSync.utilities import helpers
+from CanvasSync.utilities.ANSI import ANSI
 
 
 class Module(CanvasEntity):
-    def __init__(self, module_info, module_position, parent, identifier=u"module"):
+    def __init__(self, module_info, module_position, parent, identifier=CONSTANTS.ENTITY_MODULE):
         """, i
         Constructor method, initializes base CanvasEntity class and adds all children Folder and/or Item objects to the
         list of children
@@ -44,9 +48,9 @@ class Module(CanvasEntity):
 
         self.module_info = module_info
 
-        module_id = self.module_info[u"id"]
-        module_name = helpers.get_corrected_name(self.module_info[u"name"])
-        module_path = parent.get_path() + u"%s - %s" % (module_position, module_name)
+        module_id = self.module_info[CONSTANTS.ID]
+        module_name = helpers.get_corrected_name(self.module_info[CONSTANTS.NAME])
+        module_path = os.path.join(parent.get_path(), u"%s - %s" % (module_position, module_name))
 
         # Initialize base class
         CanvasEntity.__init__(self,
@@ -164,6 +168,13 @@ class Module(CanvasEntity):
         print(text_type(self))
 
         self.add_items()
+
+        history_record = dict({
+            CONSTANTS.HISTORY_ID: self.get_id(),
+            CONSTANTS.HISTORY_PATH: self.sync_path,
+            CONSTANTS.HISTORY_TYPE: self.get_identifier_string()
+        })
+        self.synchronizer.history.write_history_record_to_file(history_record)
 
         for child in self:
             child.sync()

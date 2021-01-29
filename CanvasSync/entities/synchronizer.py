@@ -28,6 +28,7 @@ from CanvasSync.entities.course import Course
 from CanvasSync.entities.canvas_entity import CanvasEntity
 from CanvasSync.utilities import helpers
 from CanvasSync.utilities.ANSI import ANSI
+from CanvasSync.utilities.history import History
 
 
 class Synchronizer(CanvasEntity):
@@ -53,6 +54,7 @@ class Synchronizer(CanvasEntity):
         # A dictionary to store lists of CanvasEntity objects
         # added to the hierarchy under a course ID number
         self.entities = {}
+        self.history = History(settings)
 
         # Initialize base class
         CanvasEntity.__init__(self,
@@ -85,7 +87,7 @@ class Synchronizer(CanvasEntity):
         Method that adds all Course objects representing Canvas courses to the
         list of children
         """
-        # Download list of dictionaries representing Canvas crouses and
+        # Download list of dictionaries representing Canvas courses and
         # add them all to the list of children
         for course_information in self.download_courses():
 
@@ -103,7 +105,6 @@ class Synchronizer(CanvasEntity):
         """ Walk by adding all Courses to the list of children """
 
         # Print initial walk message
-        print(self)
         print(ANSI.format(u"\n[*] Mapping out the Canvas folder hierarchy. "
                           u"Please wait...", u"red"))
         self.add_courses()

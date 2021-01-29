@@ -28,6 +28,7 @@ import requests
 from six import text_type
 
 # CanvasSync module imports
+from CanvasSync import constants as CONSTANTS
 from CanvasSync.entities.canvas_entity import CanvasEntity
 from CanvasSync.utilities.ANSI import ANSI
 
@@ -50,7 +51,7 @@ class LinkedFile(CanvasEntity):
         file_name = os.path.split(download_url)[-1]
 
         # File path
-        file_path = parent.get_path() + file_name
+        file_path = os.path.join(parent.get_path(), file_name)
 
         # No file extension or weirdly long filename will not be allowed
         # (this is not strictly necessary as the regex should only match OK URLs)
@@ -64,7 +65,7 @@ class LinkedFile(CanvasEntity):
                               sync_path=file_path,
                               parent=parent,
                               folder=False,
-                              identifier=u"linked_file")
+                              identifier=CONSTANTS.ENTITY_LINKED_FILE)
 
     def __repr__(self):
         """ String representation, overwriting base class method """
@@ -95,7 +96,6 @@ class LinkedFile(CanvasEntity):
             return False
 
         self.print_status(u"DOWNLOADING", color=u"blue")
-
         # Attempt to download the file
         try:
             response = requests.get(self.download_url)
@@ -131,6 +131,14 @@ class LinkedFile(CanvasEntity):
 
         if was_downloaded != - 1:
             self.print_status(u"SYNCED", color=u"green", overwrite_previous_line=was_downloaded)
+
+
+        history_record = dict({
+            CONSTANTS.HISTORY_ID: self.download_url,
+            CONSTANTS.HISTORY_PATH: self.sync_path,
+            CONSTANTS.HISTORY_TYPE: CONSTANTS.ENTITY_LINKED_FILE
+        })
+        self.synchronizer.history.write_history_record_to_file(history_record)
 
     def show(self):
         """ Show the folder hierarchy by printing every level """
