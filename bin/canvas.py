@@ -165,6 +165,14 @@ def do_sync(settings, password=None):
     # Initialize the API object
     api = InstructureApi(settings)
 
+    # Correct settings.courses_to_sync
+    corrected_names = []
+    for x in settings.courses_to_sync:
+        corrected_name = helpers.get_corrected_name(x)
+        corrected_names.append(corrected_name)
+    settings.courses_to_sync = []
+    settings.courses_to_sync = corrected_names[:]
+
     # Start Synchronizer with the current settings
     synchronizer = Synchronizer(settings=settings, api=api)
     synchronizer.sync()
